@@ -1,0 +1,29 @@
+<html>
+<head>
+    <script src="https://kit.fontawesome.com/f868734c05.js" crossorigin="anonymous"></script>
+    <script defer src="scripts.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>FACE RED-ET</title>
+</head>
+<body>
+    <div class="navbar">
+        <div id="start-camera" class="button">
+            <i class="fa-solid fa-play"></i>
+            <div>Start Camera</div>
+        </div>
+        <div id="click-photo" class="button hide">
+            <i class="fa-solid fa-camera"></i>
+            <div>Capture</div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <input type="text" id="name">
+    </div>
+    
+    <div class="body-container container">
+        <video id="video" width="550" height="450" autoplay></video>
+        <canvas id="canvas"  width="550" height="450"></canvas>
+    </div>
+</body>
+</html>
