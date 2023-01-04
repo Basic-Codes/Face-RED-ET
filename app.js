@@ -64,7 +64,8 @@ app.post("/upload", (req, res, next) => {
             var imageBuffer = decodedImg.data;
             var type = decodedImg.type;
             var extension = mime.getExtension(type);
-            var fileName =  `${files.length + 1}.` + extension;
+            // var fileName =  `${files.length + 1}.` + extension;
+            var fileName =  `${files.length + 1}.` + "jpg";
             try{
                 fs.writeFileSync(folder_location + fileName, imageBuffer, 'utf8');
                 res.json({msg: 'Image saved successfully'});
