@@ -2,11 +2,14 @@ const imageUpload = document.getElementById('imageUpload')
 const loading_gif = document.getElementById('loading-gif')
 
 console.log("Loading 01...")
-Promise.all([
-  faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-  faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-  faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
-]).then(start)
+
+const LoadModels = () => {
+    Promise.all([
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+    ]).then(start)
+}
 
 async function start() {
   console.log("Loading 02...")
@@ -43,20 +46,39 @@ async function start() {
   })
 }
 
-function loadLabeledImages() {
-  const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark', 'Tate', 'Rifat Noor']
-  return Promise.all(
-    labels.map(async label => {
-      console.log("Loaded: " + label)
-      const descriptions = []
-      for (let i = 1; i <= 2; i++) {
-        // const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/WebDevSimplified/Face-Recognition-JavaScript/master/labeled_images/${label}/${i}.jpg`)
-        const img = await faceapi.fetchImage(`./images/${label}/${i}.jpg`)
-        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
-        descriptions.push(detections.descriptor)
-      }
+let labels = []
 
-      return new faceapi.LabeledFaceDescriptors(label, descriptions)
-    })
-  )
+function loadLabeledImages() {
+    // const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark', 'Tate', 'Rifat Noor']
+    console.log(labels)
+    return Promise.all(
+        labels.map(async label => {
+            console.log("Loaded: " + label)
+            const descriptions = []
+            for (let i = 1; i <= 2; i++) {
+                // const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/WebDevSimplified/Face-Recognition-JavaScript/master/labeled_images/${label}/${i}.jpg`)
+                const img = await faceapi.fetchImage(`./images/${label}/${i}.jpg`)
+                const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
+                console.log(detections)
+                if(detections) {
+                    descriptions.push(detections.descriptor)
+                }
+            }
+
+            return new faceapi.LabeledFaceDescriptors(label, descriptions)
+        })
+    )
 }
+
+function loadPeoples() {
+  fetch('./people.json')
+    .then((response) => response.json())
+    .then((jsonData) => {
+        console.log(jsonData)
+        labels = jsonData.peoples
+        LoadModels()
+    })
+  .catch((error) => console.error(error));
+}
+
+loadPeoples()

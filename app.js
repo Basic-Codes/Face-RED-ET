@@ -30,12 +30,34 @@ function decodeBase64Image(dataString) {
 }
 
 
+const SavePeoples = (new_name) => {
+    fs.readFile('./people.json', (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+          const jsonData = JSON.parse(data);
+          
+          if(!jsonData.peoples.includes(new_name)) {
+            jsonData.peoples.push(new_name)
+                fs.writeFile('./people.json', JSON.stringify(jsonData), (err) => {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        console.log('JSON data saved to file');
+                    }
+                });
+            }
+        }
+    });
+}
 
 app.post("/upload", (req, res, next) => {
 
     const imgB64Data = req.body.b64
     const name = req.body.name
     const folder_location = `./images/${name}/`
+
+    SavePeoples(name)
 
     
     // ! Making Folder
